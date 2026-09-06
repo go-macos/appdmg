@@ -59,11 +59,11 @@ jobs:
 
   # THE FLEET STANDARD IS 100%, AND THIS REPOSITORY DOES NOT MEET IT.
   #
-  # It sits at 94.2%. What is missing is named rather than waved at: the
+  # It sits at 95.9%. What is missing is named rather than waved at: the
   # branches that report a failure from filepath.Rel, fs.DirEntry.Info and
   # os.Readlink on an entry the walk has just handed over, and the pass-throughs
   # for two calls that cannot fail on a volume this package has just built
-  # itself. The calls that CROSS a package boundary -- laying out the volume,
+  # itself, plus main() in cmd/appdmg, which is one line calling run(). The calls that CROSS a package boundary -- laying out the volume,
   # wrapping it, renaming the result -- are behind seams in seams.go and are
   # made to fail in the tests, because those are the ones whose error text a
   # caller will one day read.
@@ -71,7 +71,7 @@ jobs:
   # The floor refuses a regression and prints the distance to the standard.
   # THE FLOOR IS NOT THE STANDARD; the job name says so.
   coverage-floor:
-    name: coverage floor (94.0%, standard is 100%)
+    name: coverage floor (95.0%, standard is 100%)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -80,7 +80,7 @@ jobs:
           go-version-file: go.mod
           cache: true
       - run: |
-          FLOOR=94.0
+          FLOOR=95.0
           go test -coverprofile=cover.out ./... >/dev/null
           go tool cover -func=cover.out
           cov=$(go tool cover -func=cover.out | tail -1 | awk '{print $3}' | tr -d '%')

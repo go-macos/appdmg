@@ -18,7 +18,15 @@ err := appdmg.Build(appdmg.Spec{
 })
 ```
 
-That is the whole API. The window takes the background picture's own size
+That is the whole API. There is a command for release scripts too:
+
+```sh
+go run github.com/go-macos/appdmg/cmd/appdmg@latest \
+    -o MyApp.dmg -background art/bg.png -icon art/volume.icns -applications \
+    -at 'MyApp.app=160,220' -at 'Applications=480,220' \
+    MyApp.app
+```
+ The window takes the background picture's own size
 unless `Spec.Window` says otherwise, the volume takes the application's name
 unless `Spec.VolumeName` does, and the volume is sized from its content unless
 `Spec.SizeBytes` does.

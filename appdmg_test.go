@@ -26,6 +26,8 @@ import (
 var (
 	hostMakesSymlinks = runtime.GOOS != "windows"
 	hostRefusesReads  = runtime.GOOS != "windows" && os.Geteuid() != 0
+	// Windows records no executable bit, so there is none to carry over.
+	hostRecordsExecutable = runtime.GOOS != "windows"
 )
 
 // sampleApp writes a .app with the shapes that matter: a nested directory, an
@@ -159,7 +161,7 @@ func TestBuildAnInstallerImage(t *testing.T) {
 	}
 	// A bundle whose program is not executable is an application that will
 	// not start, so the mode is part of the deliverable.
-	if st.Mode()&0o111 == 0 {
+	if hostRecordsExecutable && st.Mode()&0o111 == 0 {
 		t.Errorf("the program's mode is %#o, want the executable bit", st.Mode())
 	}
 	if hostMakesSymlinks {

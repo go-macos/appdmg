@@ -59,3 +59,9 @@ for a result identical to writing the bytes at the end.
 ## Licence
 
 BSD-3-Clause.
+
+## One host limitation
+
+The modes on the volume are the modes on the host, and Windows records no
+executable bit — so a bundle assembled there arrives unable to launch. Build
+the image on the machine that built the bundle.

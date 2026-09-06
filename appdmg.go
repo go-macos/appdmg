@@ -313,7 +313,10 @@ func copyTree(v *hfsplus.Volume, src, dst string) error {
 				return err
 			}
 			// The executable bit matters: a bundle whose program is not
-			// executable is an application that will not start.
+			// executable is an application that will not start. It is taken
+			// from the host, so a bundle assembled on Windows — which
+			// records no executable bit — arrives on the volume unable to
+			// launch. Build the image where the bundle was built.
 			if err := v.WriteFile(target, b, info.Mode().Perm()); err != nil {
 				return fmt.Errorf("appdmg: write %s: %w", target, err)
 			}

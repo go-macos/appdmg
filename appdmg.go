@@ -20,15 +20,19 @@
 package appdmg
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
 	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 
-	dmg "github.com/go-diskimages/dmg"
 	hfsplus "github.com/go-filesystems/hfsplus"
 	"github.com/go-macos/dsstore"
 )
@@ -70,6 +74,12 @@ type Spec struct {
 	// window needs.
 	ApplicationsLink bool
 
+	// Window is where the window opens and how large it is. A zero Window
+	// with a background takes the picture's own size at (100, 100): the
+	// Finder draws the picture unscaled from the window's top-left corner,
+	// so a window that is not the picture's size shows part of a picture.
+	Window Window
+
 	// IconSize defaults to 96. Format is the UDIF format, "UDZO" by default —
 	// a mostly-empty HFS+ volume compresses to a small fraction of its size.
 	IconSize float64
@@ -82,6 +92,11 @@ type Spec struct {
 
 // A Point is an icon's centre in the window's coordinates.
 type Point struct{ X, Y uint32 }
+
+// A Window is where the window opens and how large it is. It is dsstore's
+// type: the record it becomes is the Finder's, and restating it here would
+// buy nothing but a conversion.
+type Window = dsstore.Window
 
 // Build writes the image described by spec.
 func Build(spec Spec) error {
@@ -109,38 +124,29 @@ func Build(spec Spec) error {
 		}
 	}
 
-	if _, err := hfsplus.Format(spec.Output, size, hfsplus.FormatConfig{Label: spec.VolumeName}); err != nil {
-		return fmt.Errorf("appdmg: format volume: %w", err)
-	}
-	v, err := hfsplus.OpenFileWritable(spec.Output)
+	v, err := newVolume(size, spec.VolumeName)
 	if err != nil {
-		return fmt.Errorf("appdmg: open volume: %w", err)
-	}
-	if err := fill(v, spec); err != nil {
-		v.Close()
-		os.Remove(spec.Output)
 		return err
 	}
-	if err := v.Sync(); err != nil {
-		v.Close()
-		return fmt.Errorf("appdmg: sync: %w", err)
+	if err := fill(v, spec); err != nil {
+		return err
 	}
-	if err := v.Close(); err != nil {
-		return fmt.Errorf("appdmg: close: %w", err)
+	if err := os.WriteFile(spec.Output, v.Bytes(), 0o644); err != nil {
+		return fmt.Errorf("appdmg: write %s: %w", spec.Output, err)
 	}
 
-	if err := dmg.WrapRaw(spec.Output); err != nil {
+	if err := wrapRaw(spec.Output); err != nil {
 		return fmt.Errorf("appdmg: wrap: %w", err)
 	}
 	if spec.Format == "UDRW" {
 		return nil
 	}
 	tmp := spec.Output + ".converting"
-	if err := dmg.ConvertUDIF(spec.Output, tmp, spec.Format); err != nil {
+	if err := convertUDIF(spec.Output, tmp, spec.Format); err != nil {
 		os.Remove(tmp)
 		return fmt.Errorf("appdmg: convert to %s: %w", spec.Format, err)
 	}
-	if err := os.Rename(tmp, spec.Output); err != nil {
+	if err := renameFile(tmp, spec.Output); err != nil {
 		os.Remove(tmp)
 		return fmt.Errorf("appdmg: replace %s: %w", spec.Output, err)
 	}
@@ -200,9 +206,27 @@ func fill(v *hfsplus.Volume, spec Spec) error {
 			return err
 		}
 		view.Background = name
+
+		// The Finder draws the picture unscaled from the window's top-left
+		// corner, so a window that is not the picture's size shows part of a
+		// picture. Decoding is only attempted when the caller left the window
+		// zero: a TIFF background is conventional and Go's standard library
+		// cannot read one, and that is not a reason to refuse it.
+		if spec.Window == (Window{}) {
+			cfg, _, err := image.DecodeConfig(bytes.NewReader(b))
+			if err != nil {
+				return fmt.Errorf("appdmg: sizing the window from %s: %w (set Spec.Window to size it yourself)", spec.Background, err)
+			}
+			spec.Window = Window{X: 100, Y: 100, Width: cfg.Width, Height: cfg.Height}
+		}
 	}
 	if err := store.SetIconView(view); err != nil {
 		return fmt.Errorf("appdmg: icon view: %w", err)
+	}
+	if spec.Window != (Window{}) {
+		if err := store.SetWindow(spec.Window); err != nil {
+			return fmt.Errorf("appdmg: window: %w", err)
+		}
 	}
 	for name, p := range spec.Positions {
 		store.SetIconPosition(name, p.X, p.Y)

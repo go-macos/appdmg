@@ -80,8 +80,11 @@ type Spec struct {
 	// so a window that is not the picture's size shows part of a picture.
 	Window Window
 
-	// IconSize defaults to 96. Format is the UDIF format, "UDZO" by default —
-	// a mostly-empty HFS+ volume compresses to a small fraction of its size.
+	// IconSize defaults to 96. Format is the UDIF format, "UDZO" by default
+	// — a mostly-empty HFS+ volume compresses to a small fraction of its
+	// size. "UDRW" writes the raw volume instead, because that is what a
+	// writable image is: a UDIF container is read-only however its trailer
+	// is stamped.
 	IconSize float64
 	Format   string
 
@@ -135,11 +138,17 @@ func Build(spec Spec) error {
 		return fmt.Errorf("appdmg: write %s: %w", spec.Output, err)
 	}
 
-	if err := wrapRaw(spec.Output); err != nil {
-		return fmt.Errorf("appdmg: wrap: %w", err)
-	}
+	// A UDRW image is not a UDIF file at all. hdiutil writes the raw volume
+	// and nothing else — `hdiutil imageinfo` on one says "raw read/write",
+	// and the file is exactly the size of the volume. An image with a koly
+	// trailer is read-only however the trailer's imageVariant is stamped:
+	// macOS reports one built here as UDRO and mounts it read-only, which is
+	// what UDZO wants and the opposite of what UDRW asks for.
 	if spec.Format == "UDRW" {
 		return nil
+	}
+	if err := wrapRaw(spec.Output); err != nil {
+		return fmt.Errorf("appdmg: wrap: %w", err)
 	}
 	tmp := spec.Output + ".converting"
 	if err := convertUDIF(spec.Output, tmp, spec.Format); err != nil {

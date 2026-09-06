@@ -241,17 +241,34 @@ func TestTheDefaultFormatCompresses(t *testing.T) {
 	}
 }
 
-func TestUDRWIsLeftUnconverted(t *testing.T) {
+// A writable image is the raw volume and nothing else. hdiutil writes one
+// that way -- "raw read/write", exactly the size of the volume, no koly
+// trailer -- and an image with a trailer is mounted read-only whatever the
+// trailer says, which is the opposite of what was asked for.
+func TestUDRWIsTheRawVolume(t *testing.T) {
 	dir := t.TempDir()
 	app := sampleApp(t, dir)
 	out := filepath.Join(dir, "rw.dmg")
-	if err := Build(Spec{Output: out, App: app, Format: "UDRW", VolumeName: "RW"}); err != nil {
+	const size = 16 << 20
+	if err := Build(Spec{Output: out, App: app, Format: "UDRW", VolumeName: "RW", SizeBytes: size}); err != nil {
 		t.Fatalf("Build: %v", err)
 	}
-	if got, err := dmg.DetectUDIFFormat(out); err != nil || got != "UDRW" {
-		t.Errorf("format = %q, %v; want UDRW", got, err)
+	if dmg.IsUDIF(out) {
+		t.Error("the writable image carries a UDIF trailer, so macOS will mount it read-only")
 	}
-	if v := opened(t, out); v.Label() != "RW" {
+	st, err := os.Stat(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if st.Size() != size {
+		t.Errorf("the image is %d bytes for a %d-byte volume", st.Size(), size)
+	}
+	v, err := hfsplus.OpenFile(out)
+	if err != nil {
+		t.Fatalf("opening the raw volume: %v", err)
+	}
+	defer v.Close()
+	if v.Label() != "RW" {
 		t.Errorf("label = %q, want RW", v.Label())
 	}
 }

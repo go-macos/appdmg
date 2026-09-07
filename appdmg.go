@@ -147,9 +147,9 @@ func Build(spec Spec) error {
 	if spec.Format == "UDRW" {
 		return nil
 	}
-	if err := wrapRaw(spec.Output); err != nil {
-		return fmt.Errorf("appdmg: wrap: %w", err)
-	}
+	// Straight from the raw volume to the container: ConvertUDIF reads a raw
+	// image as readily as a wrapped one, so wrapping it first only wrote the
+	// whole image an extra time.
 	tmp := spec.Output + ".converting"
 	if err := convertUDIF(spec.Output, tmp, spec.Format); err != nil {
 		os.Remove(tmp)

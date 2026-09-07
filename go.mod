@@ -5,7 +5,7 @@ go 1.26.4
 require (
 	github.com/go-diskimages/dmg v0.0.0-20260906163235-cfb153a3ec7d
 	github.com/go-filesystems/hfsplus v0.2.0
-	github.com/go-macos/dsstore v0.0.0-20260906163225-bae95c93054d
+	github.com/go-macos/dsstore v0.1.0
 	howett.net/plist v1.0.1
 )
 

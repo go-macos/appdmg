@@ -1,13 +1,13 @@
 github.com/go-compressions/lzfse v0.3.0 h1:slxIjY9HeG2llJSoXTwTnQ+u/iKMbr2WHUwaNAl/2yI=
 github.com/go-compressions/lzfse v0.3.0/go.mod h1:geg9IRFbMNHPgbm8xNwF3AnYTsldTX9YptJ0DOWzYv8=
-github.com/go-diskimages/dmg v0.0.0-20260906163235-cfb153a3ec7d h1:mFOBy14Fj1SpG8XJ1pUHMbeLVJt9NaoKUowvrzPshKo=
-github.com/go-diskimages/dmg v0.0.0-20260906163235-cfb153a3ec7d/go.mod h1:jS95GgaHgUTgVULS2P6Nfe+Sr5pDCYiYA2OjHMCSXnk=
+github.com/go-diskimages/dmg v0.0.0-20260907182204-944939792f30 h1:w2y5neHvdrJwl+Jd8VDyEy5CanFTWabN8ux1i643+M0=
+github.com/go-diskimages/dmg v0.0.0-20260907182204-944939792f30/go.mod h1:jS95GgaHgUTgVULS2P6Nfe+Sr5pDCYiYA2OjHMCSXnk=
 github.com/go-filesystems/hfsplus v0.2.0 h1:1Frva1D3wOzgUPdx/vpBU+h+QU6n+Op1EMNOZmWsH2U=
 github.com/go-filesystems/hfsplus v0.2.0/go.mod h1:DMXqQLSl8Nk3XhpV7pmlzCzwmBXTsrCLMH02CG6Q3mE=
 github.com/go-filesystems/interface v0.3.0 h1:cV4+2mvW1eCPyde+KIDRaGuIPAcr2sDgKrxGuGQr98k=
 github.com/go-filesystems/interface v0.3.0/go.mod h1:9MDfHNNKg9cW1qBa3hmURQj4jiWIdTo9Xpgdt8ZzvV8=
-github.com/go-macos/dsstore v0.0.0-20260906163225-bae95c93054d h1:4VdpkP9WzC0WLpZu27EdbgELE7mFpWxTBy5SrPWI5Ow=
-github.com/go-macos/dsstore v0.0.0-20260906163225-bae95c93054d/go.mod h1:W07obkiQu86B8NXP0e/fIg7aRjGOt9ToHxN1lxjIsQo=
+github.com/go-macos/dsstore v0.1.0 h1:gpkIgw+jVxI5L8YA+Olfk0IjuNnc3xV9JakOB3jXoKY=
+github.com/go-macos/dsstore v0.1.0/go.mod h1:W07obkiQu86B8NXP0e/fIg7aRjGOt9ToHxN1lxjIsQo=
 github.com/go-volumes/safeio v0.0.0-20260831125406-d8f54b2890d4 h1:RKO58FmZvbvKh6wf+7Y8gohGJ0/2hq4N8L+x2kT9bak=
 github.com/go-volumes/safeio v0.0.0-20260831125406-d8f54b2890d4/go.mod h1:QQdGwEUmPSdzD+OPq+ZcKso9ljssqgBXNk0/9z7moho=
 github.com/jessevdk/go-flags v1.4.0/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=

@@ -12,9 +12,8 @@ import (
 	hfsplus "github.com/go-filesystems/hfsplus"
 )
 
-// The four steps below cannot fail on the input this package hands them: a
-// volume it has just laid out itself, an image it has just written, a rename
-// within one directory. They are variables so a test can make them fail
+// The steps below cannot fail on the input this package hands them: a volume
+// it has just laid out itself, a rename within one directory. They are variables so a test can make them fail
 // anyway. An error branch that cannot be reached is an error branch nobody
 // has ever read, and the ones that stay unread are the ones that turn out to
 // return the wrong thing on the day they fire.
@@ -36,7 +35,6 @@ var newVolume = func(size int64, label string) (*hfsplus.Volume, error) {
 }
 
 var (
-	wrapRaw     = dmg.WrapRaw
 	convertUDIF = dmg.ConvertUDIF
 	renameFile  = os.Rename
 )

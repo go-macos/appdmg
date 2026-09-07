@@ -218,14 +218,14 @@ func TestTheStepsAfterTheVolumeIsWritten(t *testing.T) {
 			t.Errorf("error = %v", err)
 		}
 	})
-	t.Run("wrapping", func(t *testing.T) {
-		saved := wrapRaw
-		wrapRaw = func(string) error { return boom }
-		defer func() { wrapRaw = saved }()
+	t.Run("converting", func(t *testing.T) {
+		saved := convertUDIF
+		convertUDIF = func(string, string, string) error { return boom }
+		defer func() { convertUDIF = saved }()
 		spec := base
 		spec.Output = filepath.Join(dir, "b.dmg")
-		if err := Build(spec); err == nil || !strings.Contains(err.Error(), "wrap") {
-			t.Errorf("error = %v, want one naming the wrap", err)
+		if err := Build(spec); err == nil || !strings.Contains(err.Error(), "convert") {
+			t.Errorf("error = %v, want one naming the conversion", err)
 		}
 	})
 	t.Run("replacing the raw image", func(t *testing.T) {

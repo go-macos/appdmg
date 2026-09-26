@@ -3,13 +3,14 @@ module github.com/go-macos/appdmg
 go 1.26.4
 
 require (
-	github.com/go-diskimages/dmg v0.0.0-20260921134959-95ee79cb02f5
-	github.com/go-filesystems/hfsplus v0.2.0
+	github.com/go-diskimages/dmg v0.3.0
+	github.com/go-filesystems/hfsplus v0.3.0
 	github.com/go-macos/dsstore v0.1.0
 	howett.net/plist v1.0.1
 )
 
 require (
+	github.com/go-compressions/adc v0.1.0 // indirect
 	github.com/go-compressions/lzfse v0.3.0 // indirect
 	github.com/go-filesystems/interface v0.3.0 // indirect
 	github.com/go-volumes/safeio v0.0.0-20260831125406-d8f54b2890d4 // indirect

@@ -3,7 +3,7 @@ module github.com/go-macos/appdmg
 go 1.26.4
 
 require (
-	github.com/go-diskimages/dmg v0.3.0
+	github.com/go-diskimages/dmg v0.4.0
 	github.com/go-filesystems/hfsplus v0.3.0
 	github.com/go-macos/dsstore v0.1.0
 	howett.net/plist v1.0.1

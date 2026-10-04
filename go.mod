@@ -1,6 +1,6 @@
 module github.com/go-macos/appdmg
 
-go 1.26.4
+go 1.27.1
 
 require (
 	github.com/go-diskimages/dmg v0.4.1

@@ -4,7 +4,7 @@ go 1.27.1
 
 require (
 	github.com/go-diskimages/dmg v0.5.0
-	github.com/go-filesystems/hfsplus v0.5.0
+	github.com/go-filesystems/hfsplus v0.7.0
 	github.com/go-macos/dsstore v0.2.0
 	howett.net/plist v1.0.1
 )
@@ -12,6 +12,6 @@ require (
 require (
 	github.com/go-compressions/adc v0.1.0 // indirect
 	github.com/go-compressions/lzfse v0.4.1 // indirect
-	github.com/go-filesystems/interface v0.5.0 // indirect
-	github.com/go-volumes/safeio v0.0.0-20261011024942-5635ea21db3b // indirect
+	github.com/go-filesystems/interface v0.6.0 // indirect
+	github.com/go-volumes/safeio v0.0.0-20261101001828-0e1734761f39 // indirect
 )
